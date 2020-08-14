@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Client site</title>
+</head>
+<body>
+    <h2>Onion client site</h2>
+    <p id="userName"></p>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <input id="name" type="text" class="form-control" placeholder="user name">
+                <input id="profession" type="text" class="form-control" placeholder="user profession">
+                <input id="userId" type="text" class="form-control" placeholder="user id">
+                <button id="addPerson" class="btn btn-danger mt-2">Add Person</button>
+                <p id="successMessage" style="display: none; color:green">Person Added Succesfully</p>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <ul id="person-container">
+
+            </ul>
+        </div>
+
+    </div>
+
+    <script>
+        // //GET DATA
+        fetch('http://localhost:4200/persons')
+        .then(res => res.json())
+        .then(data => {
+            console.log(data);
+            displayPerson(data);
+        })
+
+        //display person list
+         const displayPerson = (data) => {
+            const personContainer = document.getElementById('person-container');
+            for( let i = 0; i < data.length; i++){
+                const person = data[i];
+                appendPerson(person, personContainer);
+            }
+         }
+
+        const appendPerson = (person, personContainer) => {
+            const item = document.createElement('li');
+            item.innerText = `${person.name}, ${person.profession}, ${person.userId}`;
+            personContainer.appendChild(item);
+        }
+
+        
+        //Post Data to server
+        const btnAddPerson = document.getElementById('addPerson');
+        btnAddPerson.addEventListener('click', () => {
+            const name = document.getElementById('name').value;
+            const profession = document.getElementById('profession').value;
+            const userId = document.getElementById('userId').value;
+            const person = {name, profession, userId};
+            console.log(person);
+            
+            //Post Data
+            fetch('http://localhost:4200/addPerson', {
+            method: 'POST',
+            body: JSON.stringify(person),
+            headers: {
+            "Content-type": "application/json; charset=UTF-8"
+            }
+        })
+        .then(res => res.json())
+        .then(data => {
+                updatePerson(data);
+                //Clean input
+                document.getElementById('name').value = '';
+                document.getElementById('profession').value = '';
+                document.getElementById('userId').value = '';
+
+                //successMessage
+                const successMessage = document.getElementById('successMessage');
+                successMessage.style.display = 'block';
+                setTimeout(() => {
+                    successMessage.style.display = 'none';
+                }, 4000)
+            });
+        })
+        
+        const updatePerson = (person) => {
+            const personContainer = document.getElementById('person-container');
+            appendPerson(person, personContainer);
+            document.getElementById('userName').innerText = person.name;
+        }
+
+    </script>
+</body>
+</html>
