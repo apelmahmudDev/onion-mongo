@@ -31,12 +31,12 @@ app.get('/foods', (req, res) => {
 
 //Daynamic foods
 app.get('/food/:key', async(req, res) => {
-  const key = req.params.key;
-
   client = await MongoClient.connect(uri, { 
     useNewUrlParser: true, 
     useUnifiedTopology: true,
   });
+  const key = req.params.key;
+  
   const db = client.db('FoodStore');
   const items = await db.collection('foods').find({key}).toArray();
   res.send(items[0]);
@@ -52,6 +52,28 @@ app.post('/addFood', (req, res) => {
     client.connect(err => {
       const collection = client.db("FoodStore").collection("foods");
       collection.insert(person, (err, result) => {
+          if(err){
+            console.log('This is error', err);
+            res.status(500).send({message:err});
+          }
+          else{
+            res.send(result.ops[0]);
+          }
+          client.close();
+      })
+    });
+})
+
+//Place Order
+app.post('/placeOrder', (req, res) => {
+  client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+  const orderDetails = req.body;
+  orderDetails.ordertTime = new Date();
+  console.log(orderDetails);
+
+    client.connect(err => {
+      const collection = client.db("FoodStore").collection("orders");
+      collection.insertOne(orderDetails, (err, result) => {
           if(err){
             console.log('This is error', err);
             res.status(500).send({message:err});
