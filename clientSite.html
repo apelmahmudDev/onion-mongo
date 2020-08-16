@@ -31,7 +31,7 @@
 
     <script>
         // //GET DATA
-        fetch('http://localhost:4200/persons')
+        fetch('http://localhost:4200/foods')
         .then(res => res.json())
         .then(data => {
             console.log(data);
@@ -64,7 +64,7 @@
             console.log(person);
             
             //Post Data
-            fetch('http://localhost:4200/addPerson', {
+            fetch('http://localhost:4200/addFood', {
             method: 'POST',
             body: JSON.stringify(person),
             headers: {
