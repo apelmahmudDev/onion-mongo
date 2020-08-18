@@ -36,7 +36,7 @@ app.get('/food/:key', async(req, res) => {
     useUnifiedTopology: true,
   });
   const key = req.params.key;
-  
+
   const db = client.db('FoodStore');
   const items = await db.collection('foods').find({key}).toArray();
   res.send(items[0]);
