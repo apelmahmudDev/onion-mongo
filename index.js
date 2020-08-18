@@ -85,5 +85,5 @@ app.post('/placeOrder', (req, res) => {
     });
 })
 
-const port = process.env.DB_PORT || 8080;
-app.listen(port, () => console.log('Listening to  port 4200'));
+const port = process.env.PORT || 8080;
+app.listen(port, () => console.log('Listening to port 8080'));
