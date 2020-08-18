@@ -8,7 +8,6 @@ app.use(cors());
 app.use(bodyParser.json());
 
 const uri = process.env.DB_PATH;
-const port = process.env.DB_PORT || 4200;
 
 let client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
@@ -86,4 +85,5 @@ app.post('/placeOrder', (req, res) => {
     });
 })
 
+const port = process.env.DB_PORT || 8080;
 app.listen(port, () => console.log('Listening to  port 4200'));
